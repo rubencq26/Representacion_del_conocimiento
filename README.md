@@ -1,6 +1,6 @@
 # Lógica de primer orden
 
-## comentarios en prolog
+### Comentarios en prolog
 ```prolog
 # comentario
 ! comentario
@@ -16,7 +16,7 @@ comentario
 ---
 
 
- ## Principio de Inducción Matemático
+ ### Principio de Inducción Matemático
  
  Sea S un conjunto ordenable.
  

@@ -67,4 +67,76 @@ Principio de Inducción
 suma_lista([], 0).
 suma_lista([Cabeza|Resto], R2):- suma_lista(Resto, R), R2 is R + Cabeza.
 ```
+---
 
+### Unificación
+
+1) Dos terminos unifican si son __identicos__
+
+```prolog
+7 ?- 1 + 1 == 2.
+false.
+```
+Dos cosas son identicas si son exactamente lo mismo caracter a caracter
+```prolog
+8 ?- 2 == 2.
+true.
+```
+
+Los parentesis solo cambian el orden
+```prolog
+9 ?- (1 + 1) == 2.
+false.
+
+10 ?- (1 + 1) == 1 + 1.
+true.
+
+11 ?- 1 + ( 1 + 1)  == 1 + 1 + 1.
+false.
+
+12 ?- (1 + 1) + 1 == 1 + 1 + 1.
+true.
+
+14 ?- +(1,1) = 1 + 1.
+true.
+```
+
+Tambien admite variables
+```prolog
+13 ?- 1 + 1 = X.
+X = 1+1.
+
+```
+Para comparar si se cumple la condicion aritmetica se usa is
+```prolog
+15 ?- 2 is 1 + 1.
+true.
+```
+
+Para realizar operaciones a los dos lados se usa =:=
+```prolog
+17 ?- 3 - 1 =:= 1 + 1.
+true.
+```
+
+? significa que la variable puede estar libre o instnaciada
+
+/*
+
+---
+
+num_elem(+Lisra, -Resultado)
+es cierto si resultado unifica con el numero de elementos de Lista.
+
+Principio de inducción
+1. num_elem([],0).
+2. num_elen(n-1) -> num_elem(n).
+
+*/
+
+num_elem([], 0).
+num_elem([_|Resto], R2):- num_elem(Resto, R), R2 is R + 1. 
+
+
+
+   

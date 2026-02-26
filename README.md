@@ -137,6 +137,22 @@ Principio de inducción
 num_elem([], 0).
 num_elem([_|Resto], R2):- num_elem(Resto, R), R2 is R + 1. 
 
+---
+
+/*
+
+pertenece(?Elem, ?Lista)
+es ciertp so Elem pertenece a Lista
+
+P(n0)
+para todo n>n0, P(n-1) ->P(n)
+
+*/
+```prolog
+pertenece(E,[E|_]).
+pertenece(R, [_|Resto]):- pertenece(R, Resto).
+```
+
 
 
    

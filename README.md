@@ -153,6 +153,18 @@ pertenece(E,[E|_]).
 pertenece(R, [_|Resto]):- pertenece(R, Resto).
 ```
 
+---
+###Invertir una lista
+
+invertir(+Lista, -ListaR)
+es cierto cuando ListaR 
+unifica con una lista qie contiene los mismos
+elementos que Lista en orden inverso
+
+```prolog
+invertir([], []).
+invertir([Cab|Resto], R2) :- invertir(Resto,R), append(R, [Cab], R2).
+```
 
 
    

@@ -263,7 +263,8 @@ crea_lista(N, Lista):- crea_lista_aux(N, N, Lista).
 
 crea_lista_aux(_, 0, []).
 
-crea_lista_aux(N, A, [C|R]):- A > 0,random(0, N, C), N2 is A -1 ,crea_lista_aux(N, N2, R).
+crea_lista_aux(N, A, [C|R]):- A > 0, NR is N + 1, random(1, NR, C), N2 is A -1 ,crea_lista_aux(N, N2, R).
+
 ```
 
    

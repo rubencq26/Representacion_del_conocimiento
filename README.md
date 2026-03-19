@@ -166,5 +166,95 @@ invertir([], []).
 invertir([Cab|Resto], R2) :- invertir(Resto,R), append(R, [Cab], R2).
 ```
 
+### Ordenacion por burbuja
+
+```Prolog
+
+/*
+ordenada(+Lista)
+    es cierto si la lista esta ordenada de menor a mayor.
+*/
+
+
+ordenada([]).
+ordenada([_]).
+
+
+ordenada([C1, C2|R]):- C1 =< C2 ,ordenada([C2|R]).
+
+/* 
+Caso base:
+La Lista esta ordenada
+*/
+
+ordena_burbuja(Lista, Lista):- ordenada(Lista).
+
+
+
+
+ordena_burbuja(Lista, R):- append(L1, [Elem1, Elem2|L2],Lista), Elem1 > Elem2, 
+append(L1, [Elem2,Elem1|L2], Siguiente),
+ordena_burbuja(Siguiente, R).
+
+%ordena_burbuja(Lista, R):- append(_, [Elem1, Elem2|_], Lista), Elem1 =< Elem2, ordena_burbuja(Lista, R).
+
+
+```
+
+
+### Ordenacion por insercion
+``` Prolog
+ordenada([]).
+ordenada([_]).
+
+
+ordenada([C1, C2|R]):- C1 =< C2 ,ordenada([C2|R]).
+
+insertar_ordenada(E,[],[E]).
+
+insertar_ordenada(E, [C|Resto], [E, C|Resto]) :- 
+    E =< C.
+
+insertar_ordenada(E, [C|Resto], [C|R]) :- 
+    E > C,
+    insertar_ordenada(E, Resto, R).
+
+
+ordena_insercion([], []).
+
+ordena_insercion([C|Resto], Result):-  ordena_insercion(Resto, R), insertar_ordenada(C,R,Result).
+```
+
+
+### Quicksort
+```Prolog
+divide(_,[], [], []).
+
+
+divide(E,[C|Resto], [C|R2], R3):- C =< E, divide(E, Resto, R2, R3).
+
+divide(E,[C|Resto], R2, [C|R3]):- C > E, divide(E, Resto, R2, R3).
+
+
+quicksort([], []).
+
+quicksort([C|Resto], R):- divide(C, Resto, Men, May),
+quicksort(Men, R1),
+quicksort(May,R2), 
+append(R1, [C|R2], R).
+
+
+
+
+
+
+crea_lista(N, Lista):- crea_lista_aux(N, N, Lista).
+
+crea_lista_aux(_, 0, []).
+
+crea_lista_aux(N, A, [C|R]):- A >= 0,random(0, N, C), N2 is A -1 ,crea_lista_aux(N, N2, R).
+```
+
+
 
    

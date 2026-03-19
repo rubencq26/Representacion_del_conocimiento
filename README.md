@@ -255,6 +255,15 @@ crea_lista_aux(_, 0, []).
 crea_lista_aux(N, A, [C|R]):- A >= 0,random(0, N, C), N2 is A -1 ,crea_lista_aux(N, N2, R).
 ```
 
+### Crea Lista de numeros aleatorios de 0 a N de tamaño N
 
+```Prolog
+
+crea_lista(N, Lista):- crea_lista_aux(N, N, Lista).
+
+crea_lista_aux(_, 0, []).
+
+crea_lista_aux(N, A, [C|R]):- A > 0,random(0, N, C), N2 is A -1 ,crea_lista_aux(N, N2, R).
+```
 
    

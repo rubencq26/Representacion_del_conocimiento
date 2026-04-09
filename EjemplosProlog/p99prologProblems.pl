@@ -191,11 +191,11 @@ decompress([C|Resto], [C|R]):-
 
 
 /* P13 (**) Run-length encoding of a list (direct solution).
-Implement the so-called run-length encoding data compression method directly. I.e. don't explicitly create the sublists containing the duplicates, as in problem P09, but only count them. As in problem P11, simplify the result list by replacing the singleton terms [1,X] by X.
-
-Example:
-?- encode_direct([a,a,a,a,b,c,c,a,a,d,e,e,e,e],X).
-X = [[4,a],b,[2,c],[2,a],d,[4,e]] */
+    Implement the so-called run-length encoding data compression method directly. I.e. don't explicitly create the sublists containing the duplicates, as in problem P09, but only count them. As in problem P11, simplify the result list by replacing the singleton terms [1,X] by X.
+    Example:
+    ?- encode_direct([a,a,a,a,b,c,c,a,a,d,e,e,e,e],X).
+    X = [[4,a],b,[2,c],[2,a],d,[4,e]] 
+*/
 
 encode_direct([], []).
 encode_direct([X|Resto], Result):-
@@ -232,7 +232,8 @@ Example:
 X = [a,a,a,b,b,b,c,c,c]
 
 What are the results of the goal:
-?- dupli(X,3,Y). */
+?- dupli(X,3,Y). 
+*/
 dupli([],_,[]).
 
 dupli(Lista, N, Result):-
@@ -248,6 +249,28 @@ dupli_helper([C|Resto], N, Acc, [C|R]):-
 
 dupli_helper([_|Resto], N, 0, R):-
     dupli_helper(Resto, N, N, R).
+
+
+/* P16 (**) Drop every N'th element from a list.
+Example:
+?- drop([a,b,c,d,e,f,g,h,i,k],3,X).
+X = [a,b,d,e,g,h,k]
+*/
+
+drop(Lista, N, Result):-
+    drop_helper(Lista, N, N, Result).
+
+drop_helper([], _, _, []).
+
+drop_helper([C|Resto], N, Acc, [C|R]):-
+    Acc > 1,
+    N2 is Acc -1,
+    drop_helper(Resto, N, N2, R).
+
+
+drop_helper([_|Resto], N, 1, R):-
+    drop_helper(Resto, N, N, R).
+    
 
 
 

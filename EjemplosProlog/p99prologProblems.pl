@@ -191,11 +191,11 @@ decompress([C|Resto], [C|R]):-
 
 
 /* P13 (**) Run-length encoding of a list (direct solution).
-    Implement the so-called run-length encoding data compression method directly. I.e. don't explicitly create the sublists containing the duplicates, as in problem P09, but only count them. As in problem P11, simplify the result list by replacing the singleton terms [1,X] by X.
-    Example:
-    ?- encode_direct([a,a,a,a,b,c,c,a,a,d,e,e,e,e],X).
-    X = [[4,a],b,[2,c],[2,a],d,[4,e]] 
-*/
+Implement the so-called run-length encoding data compression method directly. I.e. don't explicitly create the sublists containing the duplicates, as in problem P09, but only count them. As in problem P11, simplify the result list by replacing the singleton terms [1,X] by X.
+
+Example:
+?- encode_direct([a,a,a,a,b,c,c,a,a,d,e,e,e,e],X).
+X = [[4,a],b,[2,c],[2,a],d,[4,e]] */
 
 encode_direct([], []).
 encode_direct([X|Resto], Result):-
@@ -232,8 +232,7 @@ Example:
 X = [a,a,a,b,b,b,c,c,c]
 
 What are the results of the goal:
-?- dupli(X,3,Y). 
-*/
+?- dupli(X,3,Y). */
 dupli([],_,[]).
 
 dupli(Lista, N, Result):-
@@ -249,6 +248,7 @@ dupli_helper([C|Resto], N, Acc, [C|R]):-
 
 dupli_helper([_|Resto], N, 0, R):-
     dupli_helper(Resto, N, N, R).
+
 
 
 /* P16 (**) Drop every N'th element from a list.
@@ -270,9 +270,80 @@ drop_helper([C|Resto], N, Acc, [C|R]):-
 
 drop_helper([_|Resto], N, 1, R):-
     drop_helper(Resto, N, N, R).
+
+/*P17 (*) Split a list into two parts; the length of the first part is given.
+Do not use any predefined predicates.
+
+Example:
+?- split([a,b,c,d,e,f,g,h,i,k],3,L1,L2).
+L1 = [a,b,c]
+L2 = [d,e,f,g,h,i,k] */
+
+split_list([], _, [], []).
+
+split_list([C|Resto], N, [C|L1], L2):-
+    N > 0,
+    N2 is N - 1,
+    split_list(Resto, N2, L1, L2).
+
+
+split_list([C|Resto], 0, L1, [C|L2]):-
+    split_list(Resto, 0, L1, L2).
+
     
 
+/* P18 (**) Extract a slice from a list.
+Given two indices, I and K, the slice is the list containing the elements between the I'th and K'th element of the original list (both limits included). Start counting the elements with 1.
+
+Example:
+?- slice([a,b,c,d,e,f,g,h,i,k],3,7,L).
+X = [c,d,e,f,g] */
+
+
+slice(Lista, I, F, Solucion):-
+    In is I - 1,
+    length(Descartar, In),
+    append(Descartar, Resto, Lista),
+    N is F - In,    
+    length(Solucion, N),
+    append(Solucion, _, Resto).
+
+
+/*P19 (**) Rotate a list N places to the left.
+Examples:
+?- rotate([a,b,c,d,e,f,g,h],3,X).
+X = [d,e,f,g,h,a,b,c]
+
+?- rotate([a,b,c,d,e,f,g,h],-2,X).
+X = [g,h,a,b,c,d,e,f]
+
+Hint: Use the predefined predicates length/2 and append/3, as well as the result of problem P17. */
+
+rotate(Lista, N, Solucion):-
+    N >= 0,
+    split_list(Lista, N, L1,L2),
+    append(L2, L1, Solucion).
+
+rotate(Lista, N, Solucion):-
+    N < 0,
+    length(Lista, Tam),
+    T is Tam + N,
+    split_list(Lista,T, L1, L2),
+    append(L2, L1, Solucion).
+
+
+/* P20 (*) Remove the K'th element from a list.
+Example:
+?- remove_at(X,[a,b,c,d],2,R).
+X = b
+R = [a,c,d] 
+*/
 
 
 
+remove_at(X, [C|Resto], N, [C|R]):-
+    N > 1,
+    N2 is N-1,
+    remove_at(X, Resto,N2, R).
 
+remove_at(X, [X|Resto], 1, Resto).

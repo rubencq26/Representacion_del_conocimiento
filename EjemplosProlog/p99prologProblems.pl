@@ -347,3 +347,54 @@ remove_at(X, [C|Resto], N, [C|R]):-
     remove_at(X, Resto,N2, R).
 
 remove_at(X, [X|Resto], 1, Resto).
+
+
+/* P21 (*) Insert an element at a given position into a list.
+Example:
+?- insert_at(alfa,[a,b,c,d],2,L).
+L = [a,alfa,b,c,d]
+*/
+
+insert_at(X,[], _, [X]).
+
+insert_at(X, Resto, 1, [X|Resto]).
+
+insert_at(X, [C|Resto], N, [C|L]):-
+    N > 1,
+    N2 is N - 1,
+    insert_at(X, Resto, N2, L).
+
+/* P22 (*) Create a list containing all integers within a given range.
+Example:
+?- range(4,9,L).
+L = [4,5,6,7,8,9]
+*/
+
+range(X,X,[X]).
+
+range(X, Y, [X|L]):-
+    Y >= X,
+    Sig is X + 1,
+    range(Sig, Y, L).
+
+
+/* P23 (**) Extract a given number of randomly selected elements from a list.
+The selected items shall be put into a result list.
+Example:
+?- rnd_select([a,b,c,d,e,f,g,h],3,L).
+L = [e,d,a]
+
+Hint: Use the built-in random number generator random/2 and the result of problem P20.
+*/
+
+rnd_select(_, 0, []). 
+
+
+rnd_select(Lista, N, [X|R]) :-
+    N > 0,
+    length(Lista, Long),
+    Upper is Long + 1, 
+    random(1, Upper, Index),
+    remove_at(X, Lista, Index, Resto),
+    N1 is N - 1,
+    rnd_select(Resto, N1, R).

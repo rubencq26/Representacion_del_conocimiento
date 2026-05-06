@@ -487,3 +487,67 @@ crea_ag(N, [Cab|Resto] , a(Cab, R)):- N > 1, length(Resto, L), L >= N,
 my_length(N,Lista):- length(Lista,N).
 ```
 
+# Sudoku
+usamos la libreia clpfd
+```prolog
+:- use_module(library(clpfd)).
+``` 
+
+Sudoku
+     .  .  4 | 8  .  . | .  1  7	     9  3  4 | 8  2  5 | 6  1  7	     
+            |         |                      |         |
+    6  7  . | 9  .  . | .  .  .	     6  7  2 | 9  1  4 | 8  5  3
+            |         |                      |         |
+    5  .  8 | .  3  . | .  .  4      5  1  8 | 6  3  7 | 9  2  4
+    --------+---------+--------      --------+---------+--------
+    3  .  . | 7  4  . | 1  .  .      3  2  5 | 7  4  8 | 1  6  9
+            |         |                      |         |
+    .  6  9 | .  .  . | 7  8  .      4  6  9 | 1  5  3 | 7  8  2
+            |         |                      |         |
+    .  .  1 | .  6  9 | .  .  5      7  8  1 | 2  6  9 | 4  3  5
+    --------+---------+--------      --------+---------+--------
+    1  .  . | .  8  . | 3  .  6	     1  9  7 | 5  8  2 | 3  4  6
+            |         |                      |         |
+    .  .  . | .  .  6 | .  9  1	     8  5  3 | 4  7  6 | 2  9  1
+            |         |                      |         |
+    2  4  . | .  .  1 | 5  .  .      2  4  6 | 3  9  1 | 5  7  8
+   
+   sudoku(+Matriz).
+   es cierto si Matriz unifica con una matriz 9x9 que cumple las restricciones de un sudoku 9x9
+
+   1. Puede generar un sudoku valido si Matriz es una variable libre
+
+   2. Puede comprobar si Matriz es un sudoku valido si Matriz está instanciada.
+
+   3. Puede encontrar los huecos que faltan si Matriz esta parcialmente instanciada.
+
+```prolog
+:- use_module(library(clpfd)).
+
+sudoku(Rows):-
+    length(Rows, 9),
+    maplist(same_length(Rows), Rows),
+    append(Rows, Vs), Vs ins 1..9,
+    maplist(all_distinct, Rows),
+    transpose(Rows, Columns),
+    maplist(all_distinct, Columns),
+    Rows = [As, Bs, Cs, Ds, Es, Fs, Gs, Hs, Is],
+    blocks(As, Bs, Cs),
+    blocks(Ds, Es, Fs),
+    blocks(Gs, Hs, Is).
+    
+
+
+blocks([], [], []).
+
+blocks([A, B, C|R1], [D, E, F|R2], [G, H, I|R3]):-  
+    all_distinct([A,B,C,D,E,F,G,H,I]),
+    blocks(R1, R2, R3).
+```
+
+### Llamada
+```prolog
+ sudoku(Rows), maplist(label, Rows), maplist(portray_clause, Rows).
+```
+
+

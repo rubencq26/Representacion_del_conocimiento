@@ -294,4 +294,196 @@ mayor_n([(Elem,N)|Resto], Elem, N):- mayor_n(Resto, _, N2), N > N2.
 
 mayor_n([(_, N)|Resto], Elem, N2):- mayor_n(Resto, Elem, N2), N =< N2.
 ```
+
+# Arboles Binarios
+### Representacion arbol
+```prolog
+    a(Et, HijoIzq, HijoDcha)
+    nil
+    arbol1(a(1,a(2,nil,nil), a(3,nil,a(4,nil,nil)))).
+```
+### Ejercicios
+```prolog
+arbol1(a(1,a(2,nil,nil), a(3,nil,a(4,nil,nil)))).
+
+cuenta_nodos_ab(nil, 0).
+
+cuenta_nodos_ab(a(_,Hi ,Hd), R):-
+    cuenta_nodos_ab(Hi, Ri),
+    cuenta_nodos_ab(Hd, Rd),
+    R is Ri + Rd + 1.
+
+
+pertenece(E, a(E,_,_)).
+
+pertenece(E, a(Et, Hi, _)):-
+    E \= Et,
+    pertenece(E, Hi).
+
+pertenece(E, a(Et, _, Hd)):-
+    E \= Et,
+    pertenece(E, Hd).
+
+
+
+crea_ab([], nil).
+
+crea_ab([C|Resto], a(C, Ri, Rd)):-
+    length(Resto, N),
+    Mitad is N // 2,
+    length(HijoDcha, Mitad),
+    append(HijoIzq, HijoDcha, Resto),
+    crea_ab(HijoIzq, Ri),
+    crea_ab(HijoDcha, Rd).
+
+
+crea_lista(0, []).
+
+crea_lista(N, Lista) :-
+    N > 0,
+    N1 is N - 1,
+    crea_lista(N1, R),
+    append(R,[N], Lista).
+
+crea_ab_n(N, Result):-
+    crea_lista(N, Lista),
+    crea_ab(Lista, Result).
+
+
+altura(nil, 0).
+
+
+altura(a(_,Izq,Der), R):-
+    altura(Izq,PIzq),
+    altura(Der, PDer),
+    R is max(PIzq, PDer) + 1.
+    
+
+
+balanceado(nil).
+
+balanceado(a(_,Izq,Der)):-
+    altura(Izq,Ri),
+    altura(Der, Rd),
+    Dif is Ri - Rd,
+    abs(Dif, Abs),
+    Abs < 2,
+    balanceado(Izq),
+    balanceado(Der).
+
+
+
+crea_abb(Lista, R):-
+    sort(Lista, L),
+    crea_ab_balanceado(L, R).
+
+crea_ab_balanceado([], nil).
+crea_ab_balanceado(L, a(Raiz, Ri, Rd)):-
+    length(L, N),
+    N > 0,
+    Mid is N // 2,
    
+    length(L_izq, Mid),
+    append(L_izq, [Raiz|L_der], L), 
+   
+    crea_ab_balanceado(L_izq, Ri),
+    crea_ab_balanceado(L_der, Rd).
+
+
+inorden(nil, []).
+
+inorden(a(Raiz, Izq, Der), Lista) :-
+    inorden(Izq, L_izq),      
+    inorden(Der, L_der),    
+    append(L_izq, [Raiz|L_der], Lista).
+
+
+pertenece_abb(E, a(E,_,_)).
+
+pertenece_abb(E, a(Raiz, Izq, _)):-
+    E < Raiz,
+    pertenece_abb(E, Izq).
+
+pertenece_abb(E, a(Raiz, _, Der)):-
+    E > Raiz,
+    pertenece_abb(E, Der).
+
+
+hoja(a(_, nil, nil)).
+
+lista_hojas(nil, []).
+
+lista_hojas(a(Et, Izq, Der), [Et]):-
+    hoja(a(Et, Izq, Der)).
+
+lista_hojas(a(_, Izq, Der), R):-
+    \+hoja(a(_, Izq, Der)),
+    lista_hojas(Izq, HI),
+    lista_hojas(Der,HD),
+    append(HI, HD, R).
+
+```
+
+# Arboles genericos
+### Representacion 
+```prolog
+arbol1(a(5,[ a(4,[a(6,[]), a(7, [])]), a( 8, []) ])).
+```
+
+### Ejercicios
+```prolog
+cuenta_nodos(a(_, ListaArboles), R2):-
+    cuenta_nodos_lista_arboles(ListaArboles, R),
+    R2 is R + 1.
+
+
+cuenta_nodos_lista_arboles([], 0).
+
+cuenta_nodos_lista_arboles([C|Resto], R):-
+    cuenta_nodos_lista_arboles(Resto, R1),
+    cuenta_nodos(C, R2),
+    R is R1 + R2.
+
+
+
+
+
+
+altura_ag(a(_, ListaArboles), R):-
+    altura_ag_lista_arboles(ListaArboles, R1),
+    R is R1 + 1.
+
+altura_ag_lista_arboles([], 0).
+
+altura_ag_lista_arboles([Cab|Resto], R):-
+    altura_ag_lista_arboles(Resto, R1),
+    altura_ag(Cab, R2),
+    R is max(R1, R2).
+
+
+
+
+crea_ag_lista_arboles([], []).
+
+crea_ag_lista_arboles([Cab|Resto], [a(Cab, [])|R]):-
+    crea_ag_lista_arboles(Resto, R).
+
+
+
+crea_ag(N, [Cab|Resto],  a(Cab, R)):- length(Resto, L), L < N,
+    crea_ag_lista_arboles(Resto, R).
+
+
+crea_ag(N, [Cab|Resto] , a(Cab, R)):- N > 1, length(Resto, L), L >= N,
+    Div is L div N,
+    N2 is N - 1,
+    length(Lista, N2),
+    maplist(my_length(Div), Lista),
+    append([L1|Lista], Resto),
+    maplist(crea_ag(N), [L1|Lista], R).
+
+
+
+my_length(N,Lista):- length(Lista,N).
+```
+

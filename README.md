@@ -494,6 +494,7 @@ usamos la libreia clpfd
 ``` 
 
 Sudoku
+```
      .  .  4 | 8  .  . | .  1  7	     9  3  4 | 8  2  5 | 6  1  7	     
             |         |                      |         |
     6  7  . | 9  .  . | .  .  .	     6  7  2 | 9  1  4 | 8  5  3
@@ -511,7 +512,7 @@ Sudoku
     .  .  . | .  .  6 | .  9  1	     8  5  3 | 4  7  6 | 2  9  1
             |         |                      |         |
     2  4  . | .  .  1 | 5  .  .      2  4  6 | 3  9  1 | 5  7  8
-   
+   ```
    sudoku(+Matriz).
    es cierto si Matriz unifica con una matriz 9x9 que cumple las restricciones de un sudoku 9x9
 

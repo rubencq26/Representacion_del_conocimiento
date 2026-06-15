@@ -552,3 +552,84 @@ blocks([A, B, C|R1], [D, E, F|R2], [G, H, I|R3]):-
 ```
 
 
+## Timetabling
+
+```prolog
+:- use_module(library(clpfd)).
+
+% =========================================================================
+% 1. RECOLECCIÓN DE DATOS Y VARIABLES
+% =========================================================================
+
+% Recoge las asignaturas y les asigna una lista de variables (Slots) vacías.
+requirements(Rs) :-
+        Goal = class_subject_teacher_times(Class, Subject, Teacher, Number),
+        setof(req(Class, Subject, Teacher, Number), Goal, Rs0),
+        maplist(req_with_slots, Rs0, Rs).
+
+req_with_slots(R, R-Slots) :- 
+        R = req(_, _, _, N), 
+        length(Slots, N).
+
+% Extrae la lista de todos los grupos únicos de alumnos.
+classes(Classes) :-
+        setof(C, S^N^T^class_subject_teacher_times(C, S, T, N), Classes).
+
+% Extrae la lista de todos los profesores únicos.
+teachers(Teachers) :-
+        setof(T, C^S^N^class_subject_teacher_times(C, S, T, N), Teachers).
+
+
+% =========================================================================
+% 2. PREDICADO PRINCIPAL Y RESTRICCIONES
+% =========================================================================
+
+requirements_variables(Rs, Vars) :-
+        requirements(Rs),
+        pairs_slots(Rs, Vars),
+        slots_per_week(SPW),
+        Max #= SPW - 1,
+        Vars ins 0..Max,                     % Acota todas las horas de la semana
+        maplist(constrain_subject, Rs),     % Orden cronológico por asignatura
+        classes(Classes),
+        teachers(Teachers),
+        maplist(constrain_teacher(Rs), Teachers), % Evita colisiones de profesores
+        maplist(constrain_class(Rs), Classes).    % Evita colisiones de alumnos
+
+
+% =========================================================================
+% 3. RESTRICCIONES ESPECÍFICAS
+% =========================================================================
+
+% Para cada asignatura, las horas se asignan en orden ascendente (rompe simetrías).
+constrain_subject(_Req-Slots) :-
+        strictly_ascending(Slots).
+
+% Cláusula para los Alumnos: Ningún grupo puede tener dos clases a la vez.
+constrain_class(Rs, Class) :-
+        tfilter(class_req(Class), Rs, Sub),
+        pairs_slots(Sub, Vs),
+        all_different(Vs).      % Restricción FD: todas las horas deben ser distintas
+
+% Cláusula para los Profesores: Ningún profesor puede dar dos clases a la vez.
+constrain_teacher(Rs, Teacher) :-
+        tfilter(teacher_req(Teacher), Rs, Sub),
+        pairs_slots(Sub, Vs),
+        all_different(Vs).      % Restricción FD: todas las horas deben ser distintas
+
+
+% =========================================================================
+% 4. PREDICADOS AUXILIARES
+% =========================================================================
+
+strictly_ascending(Ls) :- chain(#<, Ls).
+
+class_req(C0, req(C1, _, _, _)-_, T) :- =(C0, C1, T).
+
+teacher_req(T0, req(_, _, T1, _)-_, T) :- =(T0, T1, T).
+
+pairs_slots(Ps, Vs) :-
+        pairs_values(Ps, Vs0),
+        append(Vs0, Vs).
+```
+
